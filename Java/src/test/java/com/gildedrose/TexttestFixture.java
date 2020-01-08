@@ -1,37 +1,45 @@
 package com.gildedrose;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 public class TexttestFixture {
     public static void main(String[] args) {
-        System.out.println("OMGHAI!");
-
-        Item[] items = new Item[] {
-                new Item("+5 Dexterity Vest", 10, 20), //
-                new Item("Aged Brie", 2, 0), //
-                new Item("Elixir of the Mongoose", 5, 7), //
-                new Item("Sulfuras, Hand of Ragnaros", 0, 80), //
-                new Item("Sulfuras, Hand of Ragnaros", -1, 80),
-                new Item("Backstage passes to a TAFKAL80ETC concert", 15, 20),
-                new Item("Backstage passes to a TAFKAL80ETC concert", 10, 49),
-                new Item("Backstage passes to a TAFKAL80ETC concert", 5, 49),
-                // this conjured item does not work properly yet
-                new Item("Conjured Mana Cake", 3, 6) };
-
-        GildedRose app = new GildedRose(items);
-
-        int days = 2;
-        if (args.length > 0) {
-            days = Integer.parseInt(args[0]) + 1;
-        }
-
-        for (int i = 0; i < days; i++) {
-            System.out.println("-------- day " + i + " --------");
-            System.out.println("name, sellIn, quality");
-            for (Item item : items) {
-                System.out.println(item);
-            }
-            System.out.println();
-            app.updateQuality();
-        }
+        String baseLine = getBaseLine();
+        System.out.println(baseLine);
     }
 
+    public static String getBaseLine() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(out);
+
+        printStream.println("OMGHAI!");
+
+        AbstractItem[] abstractItems = new AbstractItem[]{
+                new NormalAbstractItem("+5 Dexterity Vest", 10, 20), //
+                new AgedBrieAbstractItem(2, 0), //
+                new NormalAbstractItem("Elixir of the Mongoose", 5, 7), //
+                new SulfurasAbstractItem( 0, 80), //
+                new SulfurasAbstractItem( -1, 80),
+                new BackstageAbstractItem(15, 20),
+                new BackstageAbstractItem(10, 49),
+                new BackstageAbstractItem(5, 49),
+                // this conjured item does not work properly yet
+                new NormalAbstractItem("Conjured Mana Cake", 3, 6)};
+
+        GildedRose app = new GildedRose(abstractItems);
+
+        int days = 3;
+
+        for (int i = 0; i < days; i++) {
+            printStream.println("-------- day " + i + " --------");
+            printStream.println("name, sellIn, quality");
+            for (AbstractItem abstractItem : abstractItems) {
+                printStream.println(abstractItem);
+            }
+            printStream.println();
+            app.updateQuality();
+        }
+        return out.toString();
+    }
 }
